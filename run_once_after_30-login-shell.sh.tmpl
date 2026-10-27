@@ -1,0 +1,16 @@
+#!/bin/bash
+# Sets zsh as the login shell (asks for the password once).
+set -euo pipefail
+
+zsh_path="$(command -v zsh || true)"
+[[ -n "$zsh_path" ]] || { echo "zsh not found - install it first." >&2; exit 1; }
+
+{{ if eq .chezmoi.os "darwin" -}}
+current="$(dscl . -read "/Users/$USER" UserShell 2>/dev/null | awk '{print $2}')"
+{{ else -}}
+current="$(getent passwd "$(id -un)" | cut -d: -f7)"
+{{ end -}}
+if [[ "$current" != "$zsh_path" ]]; then
+    echo "Login shell is $current - switching to $zsh_path."
+    chsh -s "$zsh_path"
+fi

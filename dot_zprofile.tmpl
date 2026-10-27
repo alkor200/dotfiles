@@ -1,6 +1,11 @@
+{{ if eq .chezmoi.os "darwin" -}}
 # Login shell: put Homebrew on PATH/FPATH
 if [[ -x /opt/homebrew/bin/brew ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
 elif [[ -x /usr/local/bin/brew ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
+{{ else -}}
+# Login shell: user-local binaries (starship, chezmoi, fd symlink) on PATH
+export PATH="$HOME/.local/bin:$PATH"
+{{ end -}}
