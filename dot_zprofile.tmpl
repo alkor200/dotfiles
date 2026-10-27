@@ -8,4 +8,12 @@ fi
 {{ else -}}
 # Login shell: user-local binaries (starship, chezmoi, fd symlink) on PATH
 export PATH="$HOME/.local/bin:$PATH"
+
+# Minimal installs often default to LANG=C, which breaks zsh/starship's
+# unicode width calculation (prompt glitches with nerd font icons).
+# C.UTF-8 ships with glibc, no locale-gen needed.
+if [[ "$LANG" != *UTF-8* ]]; then
+    export LANG=C.UTF-8
+    export LC_ALL=C.UTF-8
+fi
 {{ end -}}
