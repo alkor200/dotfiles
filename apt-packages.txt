@@ -1,0 +1,6 @@
+zsh
+git
+curl
+fzf
+fd-find
+tmux

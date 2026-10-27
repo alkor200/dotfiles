@@ -1,0 +1,42 @@
+#!/bin/bash
+# Reinstalls packages whenever the package list changes.
+# Hash (darwin): {{ include "Brewfile" | sha256sum }}
+# Hash (linux): {{ include "apt-packages.txt" | sha256sum }}
+set -euo pipefail
+
+{{ if eq .chezmoi.os "darwin" -}}
+if ! command -v brew >/dev/null 2>&1; then
+    for b in /opt/homebrew/bin/brew /usr/local/bin/brew; do
+        [[ -x "$b" ]] && eval "$("$b" shellenv)" && break
+    done
+fi
+command -v brew >/dev/null 2>&1 || { echo "Homebrew is missing - run install.sh first." >&2; exit 1; }
+
+# Third-party taps: trust only the specific packages used, not entire taps
+brew tap nikitabobko/tap
+brew tap felixkratz/formulae
+brew tap int128/kubelogin
+brew trust --cask nikitabobko/tap/aerospace
+brew trust --formula felixkratz/formulae/borders
+brew trust --formula int128/kubelogin/kubelogin
+
+brew bundle --file={{ joinPath .chezmoi.sourceDir "Brewfile" | quote }}
+
+{{ else -}}
+sudo_cmd=""
+[[ "$(id -u)" -eq 0 ]] || sudo_cmd="sudo"
+
+$sudo_cmd apt-get update
+packages="$(grep -v '^#' {{ joinPath .chezmoi.sourceDir "apt-packages.txt" | quote }} | grep -v '^$')"
+$sudo_cmd apt-get install -y $packages
+
+mkdir -p "$HOME/.local/bin"
+if command -v fdfind >/dev/null 2>&1 && ! command -v fd >/dev/null 2>&1; then
+    ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+fi
+
+# Debian/Ubuntu ship starship only on newer releases (or not at all) - use the official installer instead.
+if ! command -v starship >/dev/null 2>&1; then
+    curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$HOME/.local/bin" -y
+fi
+{{ end -}}

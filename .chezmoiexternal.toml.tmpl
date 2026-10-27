@@ -1,0 +1,18 @@
+# External repos that chezmoi clones and keeps up to date
+{{ if eq .chezmoi.os "darwin" -}}
+[".config/alacritty/themes"]
+    type = "git-repo"
+    url = "https://github.com/alacritty/alacritty-theme.git"
+    refreshPeriod = "168h"
+{{ end }}
+[".config/tmux/plugins/tpm"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/tpm.git"
+    refreshPeriod = "168h"
+
+{{ if eq .chezmoi.os "linux" -}}
+[".antidote"]
+    type = "git-repo"
+    url = "https://github.com/mattmc3/antidote.git"
+    refreshPeriod = "168h"
+{{ end -}}

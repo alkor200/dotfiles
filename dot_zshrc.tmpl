@@ -10,9 +10,10 @@ path=("$HOME/.local/bin" $path)          # pipx & co.
 export EDITOR=vim
 export CLICOLOR=1
 
+{{ if eq .chezmoi.os "darwin" -}}
 # FIDO2 SSH keys (only if the provider exists)
 [[ -e /usr/local/lib/sk-libfido2.dylib ]] && export SSH_SK_PROVIDER=/usr/local/lib/sk-libfido2.dylib
-
+{{ end }}
 # ---------- History ----------
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=100000
@@ -21,9 +22,11 @@ setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIS
 setopt AUTO_CD INTERACTIVE_COMMENTS NO_BEEP
 
 # ---------- Completion ----------
+{{ if eq .chezmoi.os "darwin" -}}
 if [[ -n $HOMEBREW_PREFIX ]]; then
     fpath=("$HOMEBREW_PREFIX/share/zsh-completions" "$HOMEBREW_PREFIX/share/zsh/site-functions" $fpath)
 fi
+{{ end -}}
 autoload -Uz compinit
 compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
 
@@ -77,10 +80,17 @@ _ssh_hosts_collect() {
 zstyle -e ':completion:*:(ssh|scp|sftp|rsync|mosh):*' hosts '_ssh_hosts_collect'
 
 # ---------- Plugins (antidote, order matters: fzf-tab after compinit) ----------
+{{ if eq .chezmoi.os "darwin" -}}
 if [[ -r ${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh ]]; then
     source ${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh
     antidote load "$HOME/.zsh_plugins.txt"
 fi
+{{ else -}}
+if [[ -r $HOME/.antidote/antidote.zsh ]]; then
+    source $HOME/.antidote/antidote.zsh
+    antidote load "$HOME/.zsh_plugins.txt"
+fi
+{{ end -}}
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 
 # ---------- Keybindings ----------
@@ -109,9 +119,11 @@ if command -v fzf >/dev/null; then
 fi
 
 # ---------- Aliases ----------
-alias k=kubectl
-alias kx=kubectx
-command -v kubectl >/dev/null && source <(kubectl completion zsh)
+if command -v kubectl >/dev/null 2>&1; then
+    alias k=kubectl
+    alias kx=kubectx
+    source <(kubectl completion zsh)
+fi
 
 # ---------- Prompt markers (OSC 133, for "copy last output" in tmux) ----------
 _osc133_prompt() { print -n '\e]133;A\e\\' }
