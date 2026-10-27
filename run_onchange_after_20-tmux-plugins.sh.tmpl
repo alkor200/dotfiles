@@ -1,0 +1,5 @@
+#!/bin/bash
+# Reinstalls tmux plugins whenever the tmux config changes. Hash: {{ include "dot_config/tmux/tmux.conf" | sha256sum }}
+set -euo pipefail
+tpm="$HOME/.config/tmux/plugins/tpm/bin/install_plugins"
+[[ -x "$tpm" ]] && "$tpm" || echo "tpm not present yet - install plugins later with prefix + I."
