@@ -56,12 +56,3 @@ esac
 
 # Apply chezmoi + dotfiles (installs the rest via Brewfile / apt-packages.txt)
 chezmoi init --apply "$REPO"
-
-echo
-echo "==> Done. Still open:"
-echo "    - Add local settings/secrets to ~/.zshrc.local"
-echo "    - Open a new terminal (or: exec zsh)"
-case "$OS" in
-Darwin) echo "    - Install Alacritty manually if needed (Homebrew cask is disabled, not notarized)" ;;
-Linux) echo "    - Run this script again as/via root (sudo bash) if you also want zsh set up for root" ;;
-esac
