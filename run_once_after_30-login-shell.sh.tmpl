@@ -12,13 +12,20 @@ current="$(getent passwd "$(id -un)" | cut -d: -f7)"
 {{ end -}}
 if [[ "$current" != "$zsh_path" ]]; then
     echo "Login shell is $current - switching to $zsh_path."
-    # chsh prompts for the current user's password via PAM (skipped for root).
-    # Piping this script into bash (curl ... | bash) leaves stdin on the pipe,
-    # not the terminal, so the prompt reads an empty password and fails.
-    # Force it onto the real terminal, or skip with a hint if there is none.
-    if [[ -r /dev/tty ]]; then
-        chsh -s "$zsh_path" < /dev/tty
+    user="$(id -un)"
+    if [[ "$(id -u)" -eq 0 ]]; then
+        # root can change any shell without a password prompt.
+        chsh -s "$zsh_path" "$user"
+    elif sudo -n chsh -s "$zsh_path" "$user" 2>/dev/null; then
+        : # passwordless sudo (e.g. service/bridge accounts) - done
+    elif [[ -r /dev/tty ]]; then
+        # chsh normally asks for the account's OWN password via PAM, which
+        # fails for accounts that have none (or when curl | bash left stdin
+        # on the pipe instead of the terminal). Go through sudo instead -
+        # it asks for the sudoer's password, not the target account's.
+        sudo chsh -s "$zsh_path" "$user" < /dev/tty || \
+            echo "Could not switch login shell - run 'sudo chsh -s $zsh_path $user' manually." >&2
     else
-        echo "No controlling terminal - run 'chsh -s $zsh_path' manually." >&2
+        echo "No controlling terminal - run 'sudo chsh -s $zsh_path $user' manually." >&2
     fi
 fi
