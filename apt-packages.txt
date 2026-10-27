@@ -4,3 +4,4 @@ curl
 fzf
 fd-find
 tmux
+ncurses-term
