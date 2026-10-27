@@ -12,5 +12,13 @@ current="$(getent passwd "$(id -un)" | cut -d: -f7)"
 {{ end -}}
 if [[ "$current" != "$zsh_path" ]]; then
     echo "Login shell is $current - switching to $zsh_path."
-    chsh -s "$zsh_path"
+    # chsh prompts for the current user's password via PAM (skipped for root).
+    # Piping this script into bash (curl ... | bash) leaves stdin on the pipe,
+    # not the terminal, so the prompt reads an empty password and fails.
+    # Force it onto the real terminal, or skip with a hint if there is none.
+    if [[ -r /dev/tty ]]; then
+        chsh -s "$zsh_path" < /dev/tty
+    else
+        echo "No controlling terminal - run 'chsh -s $zsh_path' manually." >&2
+    fi
 fi
