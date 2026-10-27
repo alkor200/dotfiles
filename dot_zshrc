@@ -1,0 +1,127 @@
+# ~/.zshrc - managed with chezmoi. Local/secret things go in ~/.zshrc.local
+
+# ---------- Basics ----------
+: ${XDG_CACHE_HOME:=$HOME/.cache}
+mkdir -p "$XDG_CACHE_HOME/zsh"
+
+typeset -U path fpath
+path=("$HOME/.local/bin" $path)          # pipx & co.
+
+export EDITOR=vim
+export CLICOLOR=1
+
+# FIDO2 SSH keys (only if the provider exists)
+[[ -e /usr/local/lib/sk-libfido2.dylib ]] && export SSH_SK_PROVIDER=/usr/local/lib/sk-libfido2.dylib
+
+# ---------- History ----------
+HISTFILE=$HOME/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
+setopt AUTO_CD INTERACTIVE_COMMENTS NO_BEEP
+
+# ---------- Completion ----------
+if [[ -n $HOMEBREW_PREFIX ]]; then
+    fpath=("$HOMEBREW_PREFIX/share/zsh-completions" "$HOMEBREW_PREFIX/share/zsh/site-functions" $fpath)
+fi
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump"
+
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+zstyle ':completion:*' menu no                                             # fzf-tab takes over the menu
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':fzf-tab:*' switch-group '<' '>'
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'CLICOLOR_FORCE=1 ls -1G $realpath'
+
+# ---------- SSH host completion ----------
+# Hosts from ~/.ssh/config (incl. Include) and known_hosts, plus short names for FQDNs.
+_ssh_hosts_collect() {
+    emulate -L zsh
+    setopt extendedglob
+    local -a queue seen hosts
+    local f line arg kh
+    queue=($HOME/.ssh/config(N))
+    while (( $#queue )); do
+        f=$queue[1]; shift queue
+        [[ -r $f ]] || continue
+        (( ${seen[(Ie)$f]} )) && continue
+        seen+=$f
+        for line in "${(@f)$(<$f)}"; do
+            line=${line##[[:space:]]#}
+            [[ $line == \#* ]] && continue
+            case ${(L)line} in
+                include[[:space:]=]*)
+                    for arg in ${=line#*[[:space:]=]}; do
+                        [[ $arg == '~/'* ]] && arg=$HOME/${arg#'~/'}
+                        [[ $arg == /* ]] || arg=$HOME/.ssh/$arg
+                        queue+=( ${~arg}(N.) )
+                    done ;;
+                host[[:space:]=]*)
+                    hosts+=( ${=line#*[[:space:]=]} ) ;;
+            esac
+        done
+    done
+    for kh in $HOME/.ssh/known_hosts(N) $HOME/.ssh/known_hosts2(N); do
+        for line in "${(@f)$(<$kh)}"; do
+            [[ $line == [\|@\#]* || -z $line ]] && continue
+            for arg in ${(s:,:)line%% *}; do
+                arg=${arg#\[}; arg=${arg%%\]:*}
+                hosts+=( $arg ); [[ $arg == *[a-zA-Z]* ]] && hosts+=( ${arg%%.*} )
+            done
+        done
+    done
+    hosts=( ${hosts:#*[\*\?\!]*} )
+    reply=( ${(u)hosts} )
+}
+zstyle -e ':completion:*:(ssh|scp|sftp|rsync|mosh):*' hosts '_ssh_hosts_collect'
+
+# ---------- Plugins (antidote, order matters: fzf-tab after compinit) ----------
+if [[ -r ${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh ]]; then
+    source ${HOMEBREW_PREFIX:-/opt/homebrew}/opt/antidote/share/antidote/antidote.zsh
+    antidote load "$HOME/.zsh_plugins.txt"
+fi
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+
+# ---------- Keybindings ----------
+bindkey -e
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '^[[A' up-line-or-beginning-search     # up arrow searches with prefix (like fish)
+bindkey '^[OA' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+bindkey '^[OB' down-line-or-beginning-search
+bindkey '^[[1;3D' backward-word                # Alt-Left
+bindkey '^[[1;3C' forward-word                 # Alt-Right
+bindkey '^[[3~' delete-char
+
+# ---------- fzf ----------
+if command -v fzf >/dev/null; then
+    if command -v fd >/dev/null; then
+        export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+        export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+        export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+    fi
+    export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+    source <(fzf --zsh)                         # Ctrl-R history, Ctrl-T files
+    bindkey '^G' fzf-cd-widget                  # cd via fzf (Alt-C is taken by AeroSpace)
+fi
+
+# ---------- Aliases ----------
+alias k=kubectl
+alias kx=kubectx
+command -v kubectl >/dev/null && source <(kubectl completion zsh)
+
+# ---------- Prompt markers (OSC 133, for "copy last output" in tmux) ----------
+_osc133_prompt() { print -n '\e]133;A\e\\' }
+_osc133_output() { print -n '\e]133;C\e\\' }
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd  _osc133_prompt
+add-zsh-hook preexec _osc133_output
+
+# ---------- Prompt ----------
+command -v starship >/dev/null && eval "$(starship init zsh)"
+
+# ---------- Local overrides (not in the repo) ----------
+[[ -r $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
