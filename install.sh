@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Bootstrap for a fresh Mac: curl -fsSL https://raw.githubusercontent.com/<YOUR-USER>/dotfiles/main/install.sh | bash
+# Bootstrap for a fresh Mac: curl -fsSL https://raw.githubusercontent.com/alkor200/dotfiles/main/install.sh | bash
 set -euo pipefail
 
-REPO="${DOTFILES_REPO:-<YOUR-USER>}"   # GitHub user or full repo URL
+REPO="${DOTFILES_REPO:-alkor200}"   # GitHub user or full repo URL
 
 [[ "$(uname -s)" == "Darwin" ]] || { echo "This script is meant for macOS." >&2; exit 1; }
 
