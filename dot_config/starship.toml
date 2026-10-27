@@ -5,7 +5,7 @@ add_newline = false
 command_timeout = 1000
 
 # Left: directory + git
-format = "$directory($git_branch$git_state$git_status[](fg:#4E9A06)) "
+format = "$directory($git_branch$git_state[](fg:#4E9A06)) "
 
 # Right: status, duration, context, tools
 right_format = """
@@ -47,20 +47,6 @@ style = "bg:#4E9A06 fg:#000000"
 truncation_length = 24
 truncation_symbol = "…"
 format = "[ $branch(:$remote_branch)]($style)"
-
-[git_status]
-style = "bg:#4E9A06 fg:#000000"
-format = "[( $all_status$ahead_behind)]($style)"
-conflicted = "~$count"
-ahead = "⇡$count"
-behind = "⇣$count"
-diverged = "⇕⇡$ahead_count⇣$behind_count"
-untracked = "?$count"
-stashed = "*$count"
-modified = "!$count"
-staged = "+$count"
-deleted = "✘$count"
-renamed = "»$count"
 
 [git_state]
 style = "bg:#4E9A06 fg:#CC0000 bold"
