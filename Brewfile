@@ -12,7 +12,6 @@ brew "fd"               # faster file search for fzf
 # Terminal & multiplexer
 brew "tmux"
 cask "font-lilex-nerd-font"
-# Alacritty: Homebrew cask is disabled (not notarized), install manually
 
 # Window manager
 cask "nikitabobko/tap/aerospace"

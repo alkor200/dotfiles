@@ -12,7 +12,6 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 command -v brew >/dev/null 2>&1 || { echo "Homebrew is missing - run install.sh first." >&2; exit 1; }
 
-# Third-party taps: trust only the specific packages used, not entire taps
 brew tap nikitabobko/tap
 brew tap felixkratz/formulae
 brew tap int128/kubelogin
@@ -35,7 +34,6 @@ if command -v fdfind >/dev/null 2>&1 && ! command -v fd >/dev/null 2>&1; then
     ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
 fi
 
-# Debian/Ubuntu ship starship only on newer releases (or not at all) - use the official installer instead.
 if ! command -v starship >/dev/null 2>&1; then
     curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$HOME/.local/bin" -y
 fi
