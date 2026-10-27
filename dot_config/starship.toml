@@ -9,6 +9,7 @@ format = "$directory($git_branch$git_state[](fg:#4E9A06)) "
 
 # Right: status, duration, context, tools
 right_format = """
+[](fg:#444444)\
 $status\
 $cmd_duration\
 $username\
@@ -52,30 +53,29 @@ format = "[ $branch(:$remote_branch)]($style)"
 style = "bg:#4E9A06 fg:#CC0000 bold"
 format = "[ $state( $progress_current/$progress_total)]($style)"
 
-# ---------- right (segment pattern: [](fg:BG)[ content ](bg:BG fg:FG)) ----------
+# ---------- right ----------
 
 [status]
 disabled = false
 symbol = "✘"
-success_symbol = "[✔](bg:#2E3436 fg:#4E9A06)"
+success_symbol = "[✔](bg:#444444 fg:#4E9A06)"
 not_executable_symbol = "✘"
 not_found_symbol = "✘"
 sigint_symbol = "✘"
-style = "bg:#2E3436 fg:#FFFF00"
-format = "[](fg:#2E3436)[ $symbol( $common_meaning)( $signal_name)( $maybe_int) ]($style)"
+style = "bg:#444444 fg:#FFFF00"
+format = "[ $symbol( $common_meaning)( $signal_name)( $maybe_int) ]($style)"
 recognize_signal_code = true
 map_symbol = false
 
 [cmd_duration]
 min_time = 3000
-style = "bg:#C4A000 fg:#000000"
-format = "[](fg:#C4A000)[ $duration ]($style)"
+style = "bg:#444444 fg:#C4A000"
+format = "[ $duration ]($style)"
 
 [username]
-# only visible for root or SSH (like tide_context_always_display false)
 style_user = "bg:#444444 fg:#D7AF87"
 style_root = "bg:#444444 fg:#D7AF00 bold"
-format = "[](fg:#444444)[ $user]($style)"
+format = "[ $user]($style)"
 
 [hostname]
 ssh_only = true
@@ -85,51 +85,51 @@ format = "[@$hostname ]($style)"
 [jobs]
 symbol = ""
 style = "bg:#444444 fg:#4E9A06"
-format = "[](fg:#444444)[ $symbol( $number) ]($style)"
+format = "[ $symbol( $number) ]($style)"
 
 [direnv]
 disabled = false
 symbol = "▼"
-style = "bg:#D7AF00 fg:#000000"
-format = "[](fg:#D7AF00)[ $symbol $loaded/$allowed ]($style)"
+style = "bg:#444444 fg:#D7AF00"
+format = "[ $symbol $loaded/$allowed ]($style)"
 
 [python]
 symbol = "󰌠"
 style = "bg:#444444 fg:#00AFAF"
-format = "[](fg:#444444)[ $symbol $version( \\($virtualenv\\)) ]($style)"
+format = "[ $symbol $version( \\($virtualenv\\)) ]($style)"
 
 [nodejs]
 symbol = ""
-style = "bg:#44883E fg:#000000"
-format = "[](fg:#44883E)[ $symbol $version ]($style)"
+style = "bg:#444444 fg:#44883E"
+format = "[ $symbol $version ]($style)"
 
 [golang]
 symbol = ""
-style = "bg:#00ACD7 fg:#000000"
-format = "[](fg:#00ACD7)[ $symbol $version ]($style)"
+style = "bg:#444444 fg:#00ACD7"
+format = "[ $symbol $version ]($style)"
 
 [rust]
 symbol = ""
-style = "bg:#F74C00 fg:#000000"
-format = "[](fg:#F74C00)[ $symbol $version ]($style)"
+style = "bg:#444444 fg:#F74C00"
+format = "[ $symbol $version ]($style)"
 
 [terraform]
 symbol = "󱁢"
-style = "bg:#800080 fg:#000000"
-format = "[](fg:#800080)[ $symbol $workspace ]($style)"
+style = "bg:#444444 fg:#CC66CC"
+format = "[ $symbol $workspace ]($style)"
 
 [docker_context]
 symbol = ""
-style = "bg:#2496ED fg:#000000"
-format = "[](fg:#2496ED)[ $symbol $context ]($style)"
+style = "bg:#444444 fg:#2496ED"
+format = "[ $symbol $context ]($style)"
 
 [aws]
 symbol = ""
-style = "bg:#FF9900 fg:#232F3E"
-format = "[](fg:#FF9900)[ $symbol $profile( $region) ]($style)"
+style = "bg:#444444 fg:#FF9900"
+format = "[ $symbol $profile( $region) ]($style)"
 
 [openstack]
 # shows $OS_CLOUD / project once set
 symbol = "󰅟"
-style = "bg:#ED1944 fg:#FFFFFF"
-format = "[](fg:#ED1944)[ $symbol $cloud(\\($project\\)) ]($style)"
+style = "bg:#444444 fg:#ED1944"
+format = "[ $symbol $cloud(\\($project\\)) ]($style)"
