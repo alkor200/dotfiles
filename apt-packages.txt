@@ -5,3 +5,4 @@ fzf
 fd-find
 tmux
 ncurses-term
+neovim
