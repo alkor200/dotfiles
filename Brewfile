@@ -23,3 +23,4 @@ brew "pipx"
 brew "kubernetes-cli"
 brew "kubectx"
 brew "int128/kubelogin/kubelogin"   # kubectl oidc-login
+brew "neovim"
