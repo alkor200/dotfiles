@@ -1,5 +1,3 @@
-tap "nikitabobko/tap"
-tap "FelixKratz/formulae"
 tap "int128/kubelogin"
 
 # Shell & prompt
@@ -14,8 +12,10 @@ brew "tmux"
 cask "font-lilex-nerd-font"
 
 # Window manager
-cask "nikitabobko/tap/aerospace"
-brew "FelixKratz/formulae/borders"   # JankyBorders (window frames)
+cask "omniwm"
+
+# Security (FIDO2/YubiKey support for ssh - Apple's bundled OpenSSH lacks it)
+brew "openssh"          # pulls in libfido2 automatically
 
 # Tools
 brew "chezmoi"

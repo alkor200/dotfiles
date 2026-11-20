@@ -2,6 +2,6 @@ install.sh
 Brewfile
 apt-packages.txt
 {{ if ne .chezmoi.os "darwin" }}
-.config/aerospace
+.config/omniwm
 .config/alacritty
 {{ end -}}
