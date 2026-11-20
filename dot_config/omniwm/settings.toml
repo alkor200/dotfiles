@@ -6,13 +6,34 @@ tabRailAppIcons = false
 
 [borders]
 enabled = true
-width = 1.5
+width = 1.0
 
 [borders.color]
 alpha = 1.0
 blue = 0.8941176470588236
 green = 0.8901960784313725
 red = 0.8823529411764706
+
+[borders.glow]
+enabled = false
+opacity = 0.6
+radius = 8.0
+
+[borders.gradient]
+direction = "topLeftToBottomRight"
+enabled = true
+
+[borders.gradient.end]
+alpha = 1.0
+blue = 0.7
+green = 1.0
+red = 0.0
+
+[borders.gradient.start]
+alpha = 1.0
+blue = 1.0
+green = 0.4
+red = 0.0
 
 [clipboard]
 historyEnabled = false
@@ -25,7 +46,7 @@ maxTotalBytes = 67108864
 defaultSplitRatio = 1.0
 moveToRootStable = true
 singleWindowFit = "fill"
-smartSplit = false
+smartSplit = true
 splitWidthMultiplier = 1.0
 useGlobalGaps = true
 
@@ -42,16 +63,16 @@ raiseOnMouseFocus = false
 
 [gaps]
 fullscreenUsesOuterGaps = false
-size = 10.0
+size = 7.0
 
 [gaps.outer]
 bottom = 10.0
 left = 10.0
 right = 10.0
-top = 10.0
+top = 45.0
 
 [general]
-animationSpeed = 1.0
+animationSpeed = 4.0
 animationsEnabled = true
 defaultLayoutType = "dwindle"
 hotkeysEnabled = true
@@ -64,7 +85,7 @@ workspaceAutoBackAndForth = false
 
 [gestures]
 adoptNativeMoveAcrossDisplays = false
-adoptNativeResize = false
+adoptNativeResize = true
 dwindleGroupDragAcrossDisplays = "group"
 fingerCount = 3
 invertDirection = true
@@ -188,9 +209,9 @@ lyrics = true
 weather = true
 
 [statusBar]
-showAppNames = false
+showAppNames = true
 showIcon = true
-showWorkspaceName = false
+showWorkspaceName = true
 useWorkspaceId = false
 
 [statusMenu]
@@ -214,7 +235,7 @@ autoHideHideDelayMilliseconds = 0.0
 autoHideRevealDelayMilliseconds = 0.0
 backgroundOpacity = 0.1
 deduplicateAppIcons = false
-enabled = true
+enabled = false
 excludedBundleIDs = []
 fullWidth = false
 fullWidthNotchMode = "rightOfNotch"
@@ -1257,46 +1278,6 @@ id = "toggleOverview"
 [[hotkeys]]
 binding = "Unassigned"
 id = "toggleSystemStats"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.battery-details"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.clock"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.control-center"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.hidden-bar"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.media"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.notifications"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.system-stats"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.volume"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.wifi"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleShellWidget.workspaces"
 
 [[hotkeys]]
 binding = "Option+Return"
